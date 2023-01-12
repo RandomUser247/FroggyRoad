@@ -1,0 +1,75 @@
+#:kivy 2.1.0
+
+<Frog>:
+    Image:
+        source: 'img/froschi.png'
+        pos: root.pos
+        size: root.size
+
+<Vehicle>:
+    Image:
+        source: root.source
+        pos: root.pos
+        size: root.size
+        allow_stretch: True
+        keep_ratio: False
+
+<Trunk>:
+    Image:
+        allow_stretch: True
+        keep_ratio: False
+        source: root.source
+        pos: root.pos
+        size: root.size
+
+<FroggerGame>:
+    frog: my_frog
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: 'img/grass.png'
+            size: root.width, root.height/14
+            pos: 0, root.height/2
+        Rectangle:
+            source: 'img/grass.png'
+            size: root.width, root.height/14
+            pos: 0, root.top - root.height / 14
+        Rectangle:
+            source: 'img/grass.png'
+            size: root.width, root.height/14
+            pos: 0, 0
+        Color:
+            rgba: 0.2, 0.2, 0.2, 1
+        Rectangle:
+            size: root.width, root.height/14 * 6
+            pos: 0, root.height/14
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: 'img/river2.png'
+            size: root.width, root.height/14 * 5
+            pos: 0, root.height/2 + root.height / 14
+    Frog:
+        id: my_frog
+        size: root.height/14-4, root.height/14-4
+        center_x: root.width/2
+        y: 4
+    Label:
+        font_size: 40
+        outline_color: 0,0,1,1
+        outline_width: 1
+        right: root.right
+        center_y: 20
+        text: str(root.score)
+        pos_hint: {"top":1}
+    Label:
+        font_size: 40
+        outline_color: 1,0,0,1
+        outline_width: 1
+        top: root.top + 30
+        x: 0
+        text: str(root.game_time / 10)
+
+
+
