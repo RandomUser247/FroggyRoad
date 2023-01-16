@@ -1,6 +1,7 @@
+import kivy.metrics
 from kivy.properties import NumericProperty
 from kivy.uix.widget import Widget
-
+from kivy.metrics import dp
 from direction import Direction
 
 
@@ -19,15 +20,15 @@ class Frog(Widget):
             case Direction.BACKWARD if 0 + height / 14 <= self.y:
                 self.lane -= 1
             case Direction.RIGHT if width > self.x + self.width:
-                self.x += self.width
+                self.x += width / 14
             case Direction.LEFT if 0 <= self.x:
-                self.x -= self.width
+                self.x -= width / 14
         if self.y > height - height / 14:
             self.reset()
             self.parent.score += 1
 
     def move(self, speed):
-        self.x += speed
+        self.x += dp(speed)
 
     # resets frog to starting position
     def reset(self):

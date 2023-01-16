@@ -1,3 +1,4 @@
+from kivy.metrics import dp
 from kivy.properties import StringProperty
 from kivy.uix.widget import Widget
 
@@ -16,7 +17,7 @@ class Obstacle(Widget):
 
     # moves vehicle 2 pixels to right or left
     def move(self):
-        self.x += self.speed
+        self.x += dp(self.speed)
 
 
 class Vehicle(Obstacle):

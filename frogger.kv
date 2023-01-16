@@ -39,11 +39,30 @@
             source: 'img/grass.png'
             size: root.width, root.height/14
             pos: 0, 0
-        Color:
-            rgba: 0.2, 0.2, 0.2, 1
         Rectangle:
-            size: root.width, root.height/14 * 6
+            source: 'img/road.png'
+            size: root.width, root.height/14
             pos: 0, root.height/14
+        Rectangle:
+            source: 'img/road.png'
+            size: root.width, root.height/14
+            pos: 0, root.height/14 * 2
+        Rectangle:
+            source: 'img/road.png'
+            size: root.width, root.height/14 * 1
+            pos: 0, root.height/14 * 3
+        Rectangle:
+            source: 'img/road.png'
+            size: root.width, root.height/14 * 1
+            pos: 0, root.height/14 * 4
+        Rectangle:
+            source: 'img/road.png'
+            size: root.width, root.height/14 * 1
+            pos: 0, root.height/14 * 5
+        Rectangle:
+            source: 'img/road.png'
+            size: root.width, root.height/14 * 1
+            pos: 0, root.height/14 * 6
         Color:
             rgba: 1, 1, 1, 1
         Rectangle:
@@ -56,20 +75,16 @@
         center_x: root.width/2
         y: 4
     Label:
-        font_size: 40
+        font_size: sp(30)
         outline_color: 0,0,1,1
-        outline_width: 1
+        outline_width: 2
         right: root.right
         center_y: 20
         text: str(root.score)
         pos_hint: {"top":1}
     Label:
-        font_size: 40
-        outline_color: 1,0,0,1
-        outline_width: 1
-        top: root.top + 30
-        x: 0
-        text: str(root.game_time / 10)
-
-
-
+        font_size: sp(30)
+        outline_color: 1, 0, 0, 1
+        outline_width: 2
+        text: str(root.timer)
+        pos: 0, root.height - self.height / 1.5

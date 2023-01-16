@@ -13,7 +13,6 @@ class Lane(Widget):
         self.cycle = cycle
         self.number = number
         self.cycle_counter = 120
-        self.variance = 50
 
     def _spawn(self, obstacle):
         self.obstacles.append(obstacle)  # sets vehicles on random lane
@@ -25,7 +24,7 @@ class Lane(Widget):
 class RiverLane(Lane):
     def spawn(self):
         # counts up to value of cycle (example 120 cycles(2sec)), after spawns an obstacle and resets counter
-        if self.cycle_counter >= self.cycle and randint(0, 50) == 0:
+        if self.cycle_counter >= self.cycle and randint(0, 30) == 30:
             new_obstacle = Trunk(self.number, self.parent.width, self.speed)
             Lane._spawn(self, new_obstacle)
             self.cycle_counter = 0
@@ -39,10 +38,9 @@ class RoadLane(Lane):
     def __init__(self, speed, cycle, number, vehicle_type, **kwargs):
         super().__init__(speed, cycle, number, **kwargs)
         self.vehicle_type = vehicle_type
-        self.variance = 90
 
     def spawn(self):
-        if self.cycle_counter >= self.cycle and randint(0, self.variance) == 0:
+        if self.cycle_counter >= self.cycle and randint(0, 20) == 20:
             new_obstacle = Vehicle(self.number, self.vehicle_type, self.parent.width, self.speed)
             Lane._spawn(self, new_obstacle)
             self.cycle_counter = 0

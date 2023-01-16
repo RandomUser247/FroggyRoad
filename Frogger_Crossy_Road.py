@@ -17,8 +17,8 @@ from frog import Frog
 # class handles game logic and widgets
 class FroggerGame(Widget):
     frog = ObjectProperty(None)  # to handle our frog through frogger.kv
-    game_time = NumericProperty(0)
     score = NumericProperty(0)  # keeps track of the player score
+    timer = NumericProperty(0)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)  # need to open init super function (from Widget) to extend it
@@ -27,12 +27,11 @@ class FroggerGame(Widget):
             self._keyboard_closed, self)  # connects our app with kivy keyboard to listen to keyboard events
         self._keyboard.bind(on_key_down=self._on_keyboard_down)  # binds our function to widget function
         self._keyboard.bind(on_key_up=self._on_keyboard_up)
-        self.timer_counter = 0
         self.lanes = [RoadLane(speed=-3, cycle=120, number=1, vehicle_type='Station_wagon'),
                       RoadLane(speed=2, cycle=200, number=2, vehicle_type='Truck'),
-                      RoadLane(speed=-3, cycle=250, number=3, vehicle_type='Convertible'),
-                      RoadLane(speed=-4, cycle=200, number=4, vehicle_type='Convertible'),
-                      RoadLane(speed=15, cycle=180, number=5, vehicle_type='Truck'),
+                      RoadLane(speed=-3, cycle=220, number=3, vehicle_type='Convertible'),
+                      RoadLane(speed=-4, cycle=200, number=4, vehicle_type='Station_wagon'),
+                      RoadLane(speed=15, cycle=180, number=5, vehicle_type='Convertible'),
                       RoadLane(speed=-2, cycle=120, number=6, vehicle_type='Truck'),
                       RiverLane(speed=1, cycle=250, number=8),
                       RiverLane(speed=-1, cycle=500, number=9),
@@ -41,6 +40,9 @@ class FroggerGame(Widget):
                       RiverLane(speed=1, cycle=200, number=12)]
         for lane in self.lanes:
             self.add_widget(lane)
+
+        self.timer = 60
+        self.timer_counter = 0
 
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
@@ -79,26 +81,31 @@ class FroggerGame(Widget):
                 obstacle.height = self.height / 14 - 4
                 obstacle.y = obstacle.lane * self.height / 14 + 4
 
+
     # reacts on swipe input and controls the frogs movement
     def on_touch_up(self, touch):
-        if touch.dpos[1] > 0:
+        print(f'{touch.dsx=}{touch.dsy=}')
+        if touch.dsy > 0:
             self.frog.jump(Direction.FORWARD)
-        elif touch.dpos[1] < 0:
-            self.frog.jump(Direction.BACKWARD)
-        elif touch.dpos[0] > 0:
+            print("jump up")
+        elif touch.dsx > 0:
             self.frog.jump(Direction.RIGHT)
-        elif touch.dpos[0] < 0:
+            print("jump right")
+        elif touch.dsx < 0:
             self.frog.jump(Direction.LEFT)
-        else:  # if touch has no swipe (like a click) frog jumps forward
+            print("jump left")
+        elif touch.dsy < 0:
+            self.frog.jump(Direction.BACKWARD)
+            print("jump down")
+        else:
             self.frog.jump(Direction.FORWARD)
+            print("jump up")
+        return True
+
 
     # gets called 60 times a second
     def update(self, dt):
-        if self.timer_counter == 6:
-            self.game_time += 1
-            self.timer_counter = 0
-        else:
-            self.timer_counter += 1
+        self.set_timer()
         for lane in self.lanes:  # calls spawn function from every lane
             lane.spawn()
         frog_on_trunk = False
@@ -124,6 +131,19 @@ class FroggerGame(Widget):
     def decrement_score(self):
         if self.score > 0:
             self.score -= 1
+
+    def set_timer(self):
+        if self.timer_counter >= 60:
+            self.timer_counter = 0
+            self.timer -= 1
+            if self.timer == 0:
+                print('GAME OVER')
+                sleep(3)
+                self.frog.reset()
+                self.score = 0
+                self.timer = 60
+        else:
+            self.timer_counter += 1
 
 
 # runs the app
