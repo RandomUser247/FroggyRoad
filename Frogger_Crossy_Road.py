@@ -57,20 +57,19 @@ class FroggerGame(Widget):
             return
         self.down = True
         # calls function corresponding to keycode // keycode consists nummer- and string code for keyboard event
-        match keycode[1]:
-            case 'w' | 'up':
-                self.frog.jump(Direction.FORWARD)
-            case 's' | 'down':
-                self.frog.jump(Direction.BACKWARD)
-            case 'a' | 'left':
-                self.frog.jump(Direction.LEFT)
-            case 'd' | 'right':
-                self.frog.jump(Direction.RIGHT)
+        if keycode[1] in ['w', 'up']:
+            self.frog.jump(Direction.FORWARD)
+        elif keycode[1] in ['s', 'down']:
+            self.frog.jump(Direction.BACKWARD)
+        elif keycode[1] in ['a', 'left']:
+            self.frog.jump(Direction.LEFT)
+        elif keycode[1] in ['d', 'right']:
+            self.frog.jump(Direction.RIGHT)
         return True
 
     # gets called on app start
     def on_kv_post(self, base_widget):
-        Window.size = (512, 512)
+        Window.fullscren = "auto"
 
     # gets called when window.size changes
     def on_size(self, *args):
