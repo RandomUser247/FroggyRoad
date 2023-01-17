@@ -79,12 +79,17 @@
         outline_color: 0,0,1,1
         outline_width: 2
         right: root.right
-        center_y: 20
+        pos: root.right - self.width, 0
         text: str(root.score)
+        text_size: self.size
         pos_hint: {"top":1}
+        padding_x: dp(10)
+
     Label:
         font_size: sp(30)
+        text_size: self.size
         outline_color: 1, 0, 0, 1
         outline_width: 2
         text: str(root.timer)
-        pos: 0, root.height - self.height / 1.5
+        pos: root.x , root.height - self.height / 2
+        padding_x: dp(10)

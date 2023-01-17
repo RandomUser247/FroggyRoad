@@ -1,4 +1,5 @@
 # import libraries
+from operator import sub
 from time import sleep
 
 from kivy.app import App
@@ -23,10 +24,8 @@ class FroggerGame(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)  # need to open init super function (from Widget) to extend it
         self.down = False  # blocker for keyboard down
-        self._keyboard = Window.request_keyboard(
-            self._keyboard_closed, self)  # connects our app with kivy keyboard to listen to keyboard events
-        self._keyboard.bind(on_key_down=self._on_keyboard_down)  # binds our function to widget function
-        self._keyboard.bind(on_key_up=self._on_keyboard_up)
+        Window.bind(on_key_down=self._on_keyboard_down)
+        Window.bind(on_key_up=self._on_keyboard_up)
         self.lanes = [RoadLane(speed=-3, cycle=120, number=1, vehicle_type='Station_wagon'),
                       RoadLane(speed=2, cycle=200, number=2, vehicle_type='Truck'),
                       RoadLane(speed=-3, cycle=220, number=3, vehicle_type='Convertible'),
@@ -40,7 +39,7 @@ class FroggerGame(Widget):
                       RiverLane(speed=1, cycle=200, number=12)]
         for lane in self.lanes:
             self.add_widget(lane)
-
+        self.last_touch_pos = 0, 0
         self.timer = 60
         self.timer_counter = 0
 
@@ -52,18 +51,19 @@ class FroggerGame(Widget):
         self.down = False  # sets blocker variable back to false on button release
 
     # gets first keyboard event and ignores following events until the button is released
-    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+    def _on_keyboard_down(self, keyboard, keycode, something, text, *args):
+        print(text)
         if self.down:  # blocks function until button release
             return
         self.down = True
         # calls function corresponding to keycode // keycode consists nummer- and string code for keyboard event
-        if keycode[1] in ['w', 'up']:
+        if text in ['w', 'up']:
             self.frog.jump(Direction.FORWARD)
-        elif keycode[1] in ['s', 'down']:
+        elif text in ['s', 'down']:
             self.frog.jump(Direction.BACKWARD)
-        elif keycode[1] in ['a', 'left']:
+        elif text in ['a', 'left']:
             self.frog.jump(Direction.LEFT)
-        elif keycode[1] in ['d', 'right']:
+        elif text in ['d', 'right']:
             self.frog.jump(Direction.RIGHT)
         return True
 
@@ -83,24 +83,26 @@ class FroggerGame(Widget):
 
     # reacts on swipe input and controls the frogs movement
     def on_touch_up(self, touch):
-        print(f'{touch.dsx=}{touch.dsy=}')
-        if touch.dsy > 0:
-            self.frog.jump(Direction.FORWARD)
-            print("jump up")
-        elif touch.dsx > 0:
-            self.frog.jump(Direction.RIGHT)
-            print("jump right")
-        elif touch.dsx < 0:
-            self.frog.jump(Direction.LEFT)
-            print("jump left")
-        elif touch.dsy < 0:
-            self.frog.jump(Direction.BACKWARD)
-            print("jump down")
+        delta_pos = touch.pos[0] - self.last_touch_pos[0], touch.pos[1] - self.last_touch_pos[1],
+        print(f"{delta_pos=}")
+        if abs(delta_pos[0]) < abs(delta_pos[1]):
+            if delta_pos[1] > 0:
+                self.frog.jump(Direction.FORWARD)
+                print("jump up")
+            else:
+                self.frog.jump(Direction.BACKWARD)
+                print("jump down")
         else:
-            self.frog.jump(Direction.FORWARD)
-            print("jump up")
+            if delta_pos[0] > 0:
+                self.frog.jump(Direction.RIGHT)
+                print("jump right")
+            else:
+                self.frog.jump(Direction.LEFT)
+                print("jump left")
         return True
 
+    def on_touch_down(self, touch):
+        self.last_touch_pos = touch.pos
 
     # gets called 60 times a second
     def update(self, dt):
